@@ -1725,7 +1725,7 @@ async def sync_doctorates():
     inserted = duplicates = skipped = 0
     errors = []
     headers = {
-        "User-Agent": "JobHunterAI/1.0 (public doctoral opportunity aggregator)"
+        "User-Agent": "JobCiAddunaAI/1.0 (public doctoral opportunity aggregator)"
     }
 
     async with httpx.AsyncClient(

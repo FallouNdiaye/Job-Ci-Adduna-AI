@@ -19,7 +19,7 @@ import httpx
 from app.recruiter_hn import extract_mobility_statuses
 
 
-USER_AGENT = "JobHunterAI/1.0 (public job discovery)"
+USER_AGENT = "JobCiAddunaAI/1.0 (public job discovery)"
 MAX_BYTES = 2_000_000
 MAX_PAGES_PER_SOURCE = 15
 REQUEST_DELAY_SECONDS = 0.4

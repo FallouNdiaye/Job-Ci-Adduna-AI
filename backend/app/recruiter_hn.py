@@ -642,7 +642,7 @@ def collect_hiring_records(limit=30, thread_limit=3):
     with httpx.Client(
         timeout=TIMEOUT,
         follow_redirects=False,
-        headers={"User-Agent": "JobHunterAI-public-recruiter-collector/1.0"},
+        headers={"User-Agent": "JobCiAddunaAI-public-recruiter-collector/1.0"},
     ) as client:
         ashby_jobs = fetch_ashby_public_jobs(client)
         threads = latest_hiring_threads(client, thread_limit)

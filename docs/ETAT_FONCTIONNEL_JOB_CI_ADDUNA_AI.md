@@ -6,12 +6,12 @@
 
 ## 1. Présentation du projet
 
-JobHunter AI est une application locale de recherche et de suivi d'opportunités professionnelles et académiques. Elle comprend une API Python/FastAPI, une interface React/Vite en français et une base SQLite. Le projet est exécuté sur Ubuntu.
+Job Ci Adduna AI est une application locale de recherche et de suivi d'opportunités professionnelles et académiques. Elle comprend une API Python/FastAPI, une interface React/Vite en français et une base SQLite. Le projet est exécuté sur Ubuntu.
 
 **Répertoire de travail connu :**
 
 ```text
-~/Téléchargements/JobHunter-AI-Derniere-Version-Preconfiguree
+~/Téléchargements/Job Ci Adduna AI
 ```
 
 **Architecture et commandes usuelles :**

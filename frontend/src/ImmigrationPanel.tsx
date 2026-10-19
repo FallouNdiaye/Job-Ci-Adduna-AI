@@ -598,7 +598,7 @@ export default function ImmigrationPanel({ apiBase }: Props) {
         <>
           <div className="immigration-section-heading">
             <h3>Financements, bourses et programmes de mobilité</h3>
-            <p>Catalogue académique déjà intégré à JobHunter AI. Le statut de financement est repris de la source enregistrée ; il ne signifie pas que votre admissibilité personnelle a été confirmée.</p>
+            <p>Catalogue académique déjà intégré à Job Ci Adduna AI. Le statut de financement est repris de la source enregistrée ; il ne signifie pas que votre admissibilité personnelle a été confirmée.</p>
           </div>
           <label className="immigration-search immigration-funding-search">
             <Search size={17} />

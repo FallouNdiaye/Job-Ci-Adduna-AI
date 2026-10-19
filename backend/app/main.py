@@ -342,7 +342,7 @@ def normalize_job(raw: dict, source: str):
             'external_id':ext_id, 'content_hash':fingerprint}
 
 async def fetch_json(client: httpx.AsyncClient, url: str, params=None):
-    response = await client.get(url, params=params, headers={'User-Agent':'JobHunterAI/0.2 (personal job discovery; contact: local-user)'})
+    response = await client.get(url, params=params, headers={'User-Agent':'JobCiAddunaAI/0.2 (personal job discovery; contact: local-user)'})
     response.raise_for_status()
     return response.json()
 
@@ -497,7 +497,7 @@ async def collect_cnrs(client):
     """Collecte le RSS public CNRS et conserve les postes informatiques salariés pertinents."""
     response = await client.get(
         CNRS_RSS_URL,
-        headers={'User-Agent': 'JobHunterAI/0.2 (public job discovery)'},
+        headers={'User-Agent': 'JobCiAddunaAI/0.2 (public job discovery)'},
     )
     response.raise_for_status()
     content = response.content
@@ -539,7 +539,7 @@ async def collect_emploisenegal(client):
 
     response = await client.get(
         EMPLOISENEGAL_RSS_URL,
-        headers={"User-Agent": "JobHunterAI/0.2 (public job discovery)"},
+        headers={"User-Agent": "JobCiAddunaAI/0.2 (public job discovery)"},
     )
     response.raise_for_status()
     content = response.content
@@ -646,7 +646,7 @@ async def collect_emploi_dakar(client):
     """Collecte des offres IT publiques via le sitemap Emploi Dakar."""
     from urllib.parse import urlparse
 
-    headers = {"User-Agent": "JobHunterAI/0.2 (public job discovery)"}
+    headers = {"User-Agent": "JobCiAddunaAI/0.2 (public job discovery)"}
     response = await client.get(
         EMPLOI_DAKAR_SITEMAP_URL, headers=headers
     )
@@ -826,7 +826,7 @@ async def collect_senjob(client):
     """Collecte limitée d'offres IT sur les pages publiques de Senjob."""
     from urllib.parse import urljoin, urlparse
 
-    headers = {"User-Agent": "JobHunterAI/0.2 (public job discovery)"}
+    headers = {"User-Agent": "JobCiAddunaAI/0.2 (public job discovery)"}
     allowed_hosts = {"senjob.com", "www.senjob.com"}
 
     def safe_url(url, detail=False):
@@ -1139,7 +1139,7 @@ async def collect_iom(client):
                 ),
             },
             headers={
-                "User-Agent": "JobHunterAI/0.2 (public job discovery)"
+                "User-Agent": "JobCiAddunaAI/0.2 (public job discovery)"
             },
         )
         response.raise_for_status()
@@ -1279,7 +1279,7 @@ async def collect_undp(client):
 
     response = await client.get(
         UNDP_JOBS_URL,
-        headers={"User-Agent": "JobHunterAI/0.2 (public job discovery)"},
+        headers={"User-Agent": "JobCiAddunaAI/0.2 (public job discovery)"},
     )
     response.raise_for_status()
     content = response.content
@@ -1437,7 +1437,7 @@ async def collect_world_bank_group(client):
 
     home = await client.get(
         WORLD_BANK_GROUP_HOME,
-        headers={"User-Agent": "Mozilla/5.0 (compatible; JobHunterAI/0.2)"},
+        headers={"User-Agent": "Mozilla/5.0 (compatible; JobCiAddunaAI/0.2)"},
     )
     home.raise_for_status()
     if len(home.text) > 5 * 1024 * 1024:
@@ -1602,7 +1602,7 @@ async def collect_un_careers(client):
     """Lit le flux RSS public de l'ONU et retient les annonces IT pertinentes."""
     response = await client.get(
         UN_CAREERS_RSS_URL,
-        headers={'User-Agent': 'JobHunterAI/0.2 (public job discovery)'},
+        headers={'User-Agent': 'JobCiAddunaAI/0.2 (public job discovery)'},
     )
     response.raise_for_status()
     content = response.content
@@ -1741,7 +1741,7 @@ async def collect_african_union(client):
     from datetime import date
 
     headers = {
-        "User-Agent": "JobHunterAI/0.2 (public job discovery)",
+        "User-Agent": "JobCiAddunaAI/0.2 (public job discovery)",
         "Accept": "application/json",
         "Content-Type": "application/json",
         "Origin": AFRICAN_UNION_BASE_URL,
@@ -1932,7 +1932,7 @@ async def collect_ecowas(client):
     from urllib.parse import urljoin, urlparse
 
     headers = {
-        "User-Agent": "JobHunterAI/0.2 (public job discovery)",
+        "User-Agent": "JobCiAddunaAI/0.2 (public job discovery)",
         "Accept": "text/html,application/xhtml+xml",
     }
     max_bytes = 5 * 1024 * 1024
@@ -2135,7 +2135,7 @@ async def collect_unops(client):
     from datetime import date
     from urllib.parse import quote, urljoin, urlparse
 
-    headers = {"User-Agent": "JobHunterAI/0.2 (public job discovery)"}
+    headers = {"User-Agent": "JobCiAddunaAI/0.2 (public job discovery)"}
     keywords = (
         "software",
         "developer",
@@ -2322,7 +2322,7 @@ async def collect_wfp(client):
     headers = {
         "Accept": "application/json",
         "Content-Type": "application/json",
-        "User-Agent": "JobHunterAI/0.2 (public job discovery)",
+        "User-Agent": "JobCiAddunaAI/0.2 (public job discovery)",
     }
     keywords = (
         "ICT", "information technology", "software",
@@ -2528,7 +2528,7 @@ async def collect_giz(client):
 
     headers = {
         "Accept": "application/json",
-        "User-Agent": "JobHunterAI/0.2 (public job discovery)",
+        "User-Agent": "JobCiAddunaAI/0.2 (public job discovery)",
     }
 
     response = await client.get(GIZ_CONFIG_URL, headers=headers)
@@ -2956,7 +2956,7 @@ async def collect_itu(client):
     from datetime import date
     from urllib.parse import urljoin, urlparse
 
-    headers = {"User-Agent": "JobHunterAI/0.2 (public job discovery)"}
+    headers = {"User-Agent": "JobCiAddunaAI/0.2 (public job discovery)"}
     listing_urls = [ITU_LIST_URL]
     candidates = {}
 
@@ -3113,7 +3113,7 @@ async def collect_isdb(client):
     from datetime import date
     from urllib.parse import urljoin, urlparse
 
-    headers = {"User-Agent": "JobHunterAI/0.2 (public job discovery)"}
+    headers = {"User-Agent": "JobCiAddunaAI/0.2 (public job discovery)"}
     queries = (
         "", "software", "developer", "information technology",
         "data", "digital", "cybersecurity", "cloud", "systems",
@@ -3315,7 +3315,7 @@ async def collect_unfpa(client):
     from datetime import date
     from urllib.parse import urljoin, urlparse
 
-    headers = {"User-Agent": "JobHunterAI/0.2 (public job discovery)"}
+    headers = {"User-Agent": "JobCiAddunaAI/0.2 (public job discovery)"}
     response = await client.get(UNFPA_JOBS_URL, headers=headers)
     response.raise_for_status()
     if len(response.content) > 5 * 1024 * 1024:
@@ -3474,7 +3474,7 @@ async def collect_unicef(client):
     from urllib.parse import quote
     from datetime import date
 
-    headers = {"User-Agent": "JobHunterAI/0.2 (public job discovery)"}
+    headers = {"User-Agent": "JobCiAddunaAI/0.2 (public job discovery)"}
     keywords = ("software", "developer", "ICT", "information technology", "digital")
     candidates = {}
 
@@ -3641,7 +3641,7 @@ async def collect_unesco(client):
         })
         response = await client.get(
             url,
-            headers={"User-Agent": "JobHunterAI/0.2 (public job discovery)"},
+            headers={"User-Agent": "JobCiAddunaAI/0.2 (public job discovery)"},
         )
         response.raise_for_status()
 
@@ -3769,7 +3769,7 @@ async def collect_fao(client):
 
     response = await client.get(
         FAO_SEARCH_URL,
-        headers={"User-Agent": "JobHunterAI/0.2 (public job discovery)"},
+        headers={"User-Agent": "JobCiAddunaAI/0.2 (public job discovery)"},
     )
     response.raise_for_status()
     page = response.text
@@ -3885,7 +3885,7 @@ async def collect_ilo(client):
 
     response = await client.get(
         ILO_RSS_URL,
-        headers={"User-Agent": "JobHunterAI/0.2 (public job discovery)"},
+        headers={"User-Agent": "JobCiAddunaAI/0.2 (public job discovery)"},
     )
     response.raise_for_status()
     content = response.content
@@ -4017,7 +4017,7 @@ async def collect_euraxess(client):
         response = await client.get(
             EURAXESS_SEARCH_URL,
             params={'page': page},
-            headers={'User-Agent': 'JobHunterAI/0.2 (public job discovery)'},
+            headers={'User-Agent': 'JobCiAddunaAI/0.2 (public job discovery)'},
         )
         response.raise_for_status()
         content = response.content
@@ -4131,7 +4131,7 @@ async def collect_expat_dakar(client):
     from urllib.parse import urlparse
     from datetime import date
 
-    headers = {"User-Agent": "JobHunterAI/0.2 (public job discovery)"}
+    headers = {"User-Agent": "JobCiAddunaAI/0.2 (public job discovery)"}
     urls = []
     seen = set()
 
@@ -4273,7 +4273,7 @@ async def collect_liggey(client):
     """Extrait des offres IT depuis la page publique et les JobPosting Liggey."""
     from urllib.parse import urljoin, urlsplit, urlunsplit
 
-    headers = {"User-Agent": "JobHunterAI/0.2 (public job discovery)"}
+    headers = {"User-Agent": "JobCiAddunaAI/0.2 (public job discovery)"}
 
     response = await client.get(LIGGEY_CATEGORY_URL, headers=headers)
     response.raise_for_status()
@@ -4705,7 +4705,7 @@ async def collect_icrc(client):
     from datetime import date
     from urllib.parse import urljoin, urlparse
 
-    headers = {"User-Agent": "JobHunterAI/0.2 (public job discovery)"}
+    headers = {"User-Agent": "JobCiAddunaAI/0.2 (public job discovery)"}
 
     try:
         response = await client.get(ICRC_JOBS_URL, headers=headers)
@@ -4864,7 +4864,7 @@ async def collect_msf(client):
     from datetime import date
     from urllib.parse import urljoin, urlparse
 
-    headers = {"User-Agent": "JobHunterAI/0.2 (public job discovery)"}
+    headers = {"User-Agent": "JobCiAddunaAI/0.2 (public job discovery)"}
     try:
         response = await client.get(MSF_JOBS_URL, headers=headers)
         response.raise_for_status()
@@ -5065,7 +5065,7 @@ async def collect_nrc(client):
     """Collecte les offres IT/numériques publiques du portail officiel NRC."""
     from datetime import date
 
-    headers = {"User-Agent": "JobHunterAI/0.2 (public job discovery)"}
+    headers = {"User-Agent": "JobCiAddunaAI/0.2 (public job discovery)"}
     gathered = {}
     offset = 0
     page_size = 25
@@ -5288,7 +5288,7 @@ async def collect_unido(client):
     from urllib.parse import urlencode, urlparse
 
     headers = {
-        "User-Agent": "JobHunterAI/0.2 (public job discovery)",
+        "User-Agent": "JobCiAddunaAI/0.2 (public job discovery)",
         "Accept-Language": "en",
     }
     candidates = {}
@@ -5485,7 +5485,7 @@ async def collect_ebrd(client):
     from datetime import date
     from urllib.parse import urlparse
 
-    headers = {"User-Agent": "JobHunterAI/0.2 (public job discovery)"}
+    headers = {"User-Agent": "JobCiAddunaAI/0.2 (public job discovery)"}
     candidates = {}
 
     for page_url in EBRD_CATEGORY_URLS:
@@ -5670,7 +5670,7 @@ async def collect_un_women(client):
     from datetime import date
 
     headers = {
-        "User-Agent": "JobHunterAI/0.2 (public job discovery)",
+        "User-Agent": "JobCiAddunaAI/0.2 (public job discovery)",
         "Accept": "application/json",
         "Accept-Language": "en",
     }
@@ -5996,7 +5996,7 @@ async def collect_irc(client):
     headers = {
         "Accept": "application/json",
         "Content-Type": "application/json",
-        "User-Agent": "JobHunterAI/0.2 (public job discovery)",
+        "User-Agent": "JobCiAddunaAI/0.2 (public job discovery)",
     }
     # Recherche bornée par terme pour réduire la charge et les doublons.
     keywords = (
@@ -6210,7 +6210,7 @@ async def collect_drc(client):
     from urllib.parse import parse_qs, urljoin, urlparse
 
     headers = {
-        "User-Agent": "JobHunterAI/0.2 (public job discovery)",
+        "User-Agent": "JobCiAddunaAI/0.2 (public job discovery)",
         "Accept": "text/html,application/xhtml+xml",
     }
 
@@ -6487,7 +6487,7 @@ async def collect_acf(client):
     from urllib.parse import urljoin, urlparse
 
     headers = {
-        "User-Agent": "JobHunterAI/0.2 (public job discovery)",
+        "User-Agent": "JobCiAddunaAI/0.2 (public job discovery)",
         "Accept": "text/html,application/xhtml+xml",
     }
 
@@ -6612,7 +6612,7 @@ async def collect_hi(client):
     from urllib.parse import urlparse
 
     headers = {
-        "User-Agent": "JobHunterAI/0.2 (public job discovery)",
+        "User-Agent": "JobCiAddunaAI/0.2 (public job discovery)",
         "Accept": "application/json",
     }
 
@@ -6766,7 +6766,7 @@ async def collect_remote_jobs_api(client):
 
 
 def _normalize_optional_record(raw, source):
-    """Map optional collector records to the common JobHunter schema."""
+    """Map optional collector records to the common Job Ci Adduna AI schema."""
     if hasattr(raw, 'to_compact_dict'):
         raw = raw.to_compact_dict()
     elif hasattr(raw, '__dict__') and not isinstance(raw, dict):
@@ -7494,7 +7494,7 @@ async def lifespan(app: FastAPI):
         if tasks:
             await asyncio.gather(*tasks, return_exceptions=True)
 
-app = FastAPI(title='JobHunter AI API', version='0.2.0', lifespan=lifespan)
+app = FastAPI(title='Job Ci Adduna AI API', version='0.2.0', lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=[x.strip() for x in os.getenv('CORS_ORIGINS','http://localhost:5173,http://127.0.0.1:5173').split(',') if x.strip()], allow_credentials=True, allow_methods=['*'], allow_headers=['*'])
 app.include_router(doctoral_router)
 app.include_router(immigration_router)
