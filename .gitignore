@@ -1,0 +1,51 @@
+__pycache__/
+*.py[cod]
+.venv/
+.env
+*.db
+node_modules/
+dist/
+.DS_Store
+
+# Job Ci Adduna AI — fichiers locaux et sensibles
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Bases de donnees et fichiers SQLite
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.sqlite-*
+
+# Secrets, journaux et sauvegardes locales
+*.pem
+*.key
+*.log
+logs/
+backups/
+**/backups/
+**/*.bak
+**/*.backup
+**/*.bak-*
+**/*.db.bak
+
+# Dependances, caches et builds
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+node_modules/
+dist/
+.DS_Store
+
+# Job Ci Adduna AI — sauvegardes de travail et CV personnels
+**/*.before-*
+**/*.bak-*
+**/*.backup
+frontend/public/cv/*.pdf
+*.tsbuildinfo
