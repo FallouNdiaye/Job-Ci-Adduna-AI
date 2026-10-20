@@ -278,3 +278,54 @@
 .recruiter-eligibility-notes{margin:8px 0;color:var(--text);font-size:11px;line-height:1.6;overflow-wrap:anywhere}
 .recruiter-evidence{margin:8px 0;font-size:11px}
 .recruiter-evidence a{display:inline-flex;align-items:center;gap:5px;color:var(--accent);overflow-wrap:anywhere}
+
+
+/* Module Formations & financements — Job Ci Adduna AI */
+.training-panel{display:grid;gap:18px;min-width:0}
+.training-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.training-heading h2{margin:0;color:var(--heading);font:700 20px Manrope,sans-serif}
+.training-heading p{margin:5px 0 0;color:var(--muted);font-size:12px;line-height:1.6}
+.training-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.training-stats>div{min-width:0;padding:15px;border:1px solid var(--border);border-radius:12px;background:var(--surface);box-shadow:var(--shadow)}
+.training-stats span{display:block;color:var(--muted);font-size:11px}
+.training-stats strong{display:block;margin-top:6px;color:var(--heading);font-size:23px}
+.training-filters{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.training-search{display:flex;align-items:center;gap:8px;flex:1 1 220px;min-width:160px;padding:0 11px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--muted)}
+.training-search input{width:100%;min-width:0;padding:10px 0;border:0;outline:none;background:transparent;color:var(--text);font:inherit;font-size:12px}
+.training-filters select,.training-form input,.training-form select,.training-form textarea{min-width:0;max-width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font:inherit;font-size:12px}
+.training-filters select{flex:0 1 auto}
+.training-favorites-filter{display:inline-flex;align-items:center;gap:7px;color:var(--muted);font-size:12px;white-space:nowrap}
+.training-list{display:grid;gap:13px}
+.training-card{min-width:0;padding:17px;border:1px solid var(--border);border-radius:13px;background:var(--surface);box-shadow:var(--shadow);transition:border-color .18s,transform .18s}
+.training-card:hover{border-color:color-mix(in srgb,var(--accent) 35%,var(--border));transform:translateY(-1px)}
+.training-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.training-card h3{margin:7px 0;color:var(--heading);font:700 16px Manrope,sans-serif;overflow-wrap:anywhere}
+.training-provider{color:var(--muted);font-size:11px;line-height:1.5;overflow-wrap:anywhere}
+.training-category{display:inline-flex;align-items:center;padding:4px 8px;border:1px solid var(--border);border-radius:20px;background:var(--surface-soft);color:var(--muted);font-size:10px}
+.training-star{display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--muted);cursor:pointer}
+.training-star.is-favorite{border-color:#c28a2c66;background:#c28a2c12;color:#c28a2c}
+.training-meta{display:flex;gap:7px 13px;flex-wrap:wrap;margin:10px 0;color:var(--muted);font-size:11px;line-height:1.6}
+.training-meta span{overflow-wrap:anywhere}
+.training-funding{display:inline-flex;align-items:center;gap:5px;margin:4px 0;padding:5px 8px;border:1px solid var(--border);border-radius:7px;color:var(--muted);font-size:10px;line-height:1.5}
+.training-description{margin:11px 0;color:var(--text);font-size:12px;line-height:1.7;overflow-wrap:anywhere;white-space:pre-line}
+.training-card-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:13px;padding-top:12px;border-top:1px solid var(--border)}
+.training-links{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.training-links a{display:inline-flex;align-items:center;gap:5px;max-width:100%;overflow-wrap:anywhere}
+.training-sources{padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
+.training-sources h3{margin:0 0 10px;color:var(--heading);font-size:13px}
+.training-sources ul{display:flex;gap:8px 16px;flex-wrap:wrap;margin:0;padding-left:18px}
+.training-sources li{color:var(--muted);font-size:11px;line-height:1.6;overflow-wrap:anywhere}
+.training-sources a{color:var(--accent)}
+.training-form{display:grid;gap:13px;padding:17px;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
+.training-form-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.training-form-heading h3{margin:0;color:var(--heading);font-size:15px}
+.training-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.training-form label{display:grid;gap:6px;min-width:0;color:var(--muted);font-size:11px}
+.training-form input,.training-form select,.training-form textarea{width:100%;box-sizing:border-box}
+.training-form textarea{min-height:90px;resize:vertical;line-height:1.6}
+.training-form .training-description-field{grid-column:1/-1}
+.training-form-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.app-shell[data-theme="dark"] .training-card,.app-shell[data-theme="dark"] .training-stats>div,.app-shell[data-theme="dark"] .training-form,.app-shell[data-theme="dark"] .training-sources{background:var(--surface);border-color:var(--border)}
+.app-shell[data-theme="dark"] .training-filters select,.app-shell[data-theme="dark"] .training-search,.app-shell[data-theme="dark"] .training-form input,.app-shell[data-theme="dark"] .training-form select,.app-shell[data-theme="dark"] .training-form textarea{background:var(--surface);border-color:var(--border);color:var(--text)}
+@media(max-width:720px){.training-stats{grid-template-columns:1fr}.training-stats>div{padding:12px}.training-stats strong{font-size:20px}.training-filters{align-items:stretch}.training-search,.training-filters select{flex:1 1 100%;width:100%}.training-favorites-filter{padding:5px 0}.training-card{padding:13px}.training-card h3{font-size:14px}.training-card-bottom{align-items:flex-start;flex-direction:column}.training-form-grid{grid-template-columns:1fr}.training-form .training-description-field{grid-column:auto}}
+@media(prefers-reduced-motion:reduce){.training-card{transition:none}}

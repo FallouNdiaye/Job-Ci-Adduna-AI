@@ -7,3 +7,8 @@ python-dotenv>=1.0,<2.0
 
 # Extraction PDF multiplateforme (Windows/Linux)
 pypdf>=5.0,<7.0
+
+# OCR multiplateforme pour les catalogues PDF numérisés
+PyMuPDF==2.0
+rapidocr==3.10.0
+onnxruntime==1.31.0

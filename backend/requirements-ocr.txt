@@ -1,0 +1,5 @@
+# Dépendances facultatives pour lire les catalogues PDF numérisés.
+# Installation séparée de l'environnement principal.
+PyMuPDF==2.0
+rapidocr==3.10.0
+onnxruntime==1.31.0

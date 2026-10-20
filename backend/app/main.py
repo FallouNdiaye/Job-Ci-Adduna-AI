@@ -16,6 +16,8 @@ from app.doctoral import router as doctoral_router, init_doctoral_db, sync_docto
 from app.immigration import router as immigration_router
 from app.recruiters import router as recruiters_router, init_recruiters_db
 from app.recruiter_sync import sync_hackernews_recruiters, sync_official_recruiters
+from app.trainings import router as trainings_router, init_trainings_db
+from app.training_collector import collect_force_n
 
 logging.basicConfig(level=os.getenv('LOG_LEVEL', 'INFO'))
 logger = logging.getLogger('jobhunter.collector')
@@ -34,6 +36,13 @@ RECRUITER_AUTO_SYNC_ENABLED = os.getenv(
 ).lower() in {'1', 'true', 'yes', 'on'}
 RECRUITER_SYNC_INTERVAL_HOURS = max(
     1, int(os.getenv('RECRUITER_SYNC_INTERVAL_HOURS', '6'))
+)
+
+TRAINING_AUTO_SYNC_ENABLED = os.getenv(
+    'TRAINING_AUTO_SYNC_ENABLED', 'true'
+).lower() in {'1', 'true', 'yes', 'on'}
+TRAINING_SYNC_INTERVAL_HOURS = max(
+    1, int(os.getenv('TRAINING_SYNC_INTERVAL_HOURS', '24'))
 )
 
 HTTP_TIMEOUT = float(os.getenv('COLLECTOR_HTTP_TIMEOUT', '20'))
@@ -7474,11 +7483,46 @@ async def recruiter_scheduler_loop():
         logger.info("Prochaine collecte recruteurs prévue à %s", next_run.isoformat())
 
 
+async def training_scheduler_loop():
+    interval = TRAINING_SYNC_INTERVAL_HOURS * 3600
+    next_run = datetime.now(timezone.utc) + timedelta(seconds=interval)
+    logger.info(
+        "Planificateur formations FORCE-N activé ; prochaine collecte prévue à %s",
+        next_run.isoformat()
+    )
+
+    while True:
+        await wait_until_utc(next_run)
+        try:
+            logger.info("Démarrage de la collecte automatique des formations FORCE-N")
+            result = await asyncio.to_thread(collect_force_n)
+            errors = result.get("errors", [])
+            logger.info(
+                "Collecte FORCE-N terminée : %s fiches traitées, %s ignorées, %s erreurs",
+                result.get("saved", 0),
+                result.get("skipped", 0),
+                len(errors)
+            )
+            for error in errors:
+                logger.warning("Collecte FORCE-N : %s", error)
+        except asyncio.CancelledError:
+            raise
+        except Exception:
+            logger.exception("Collecte automatique FORCE-N échouée")
+
+        next_run = datetime.now(timezone.utc) + timedelta(seconds=interval)
+        logger.info(
+            "Prochaine collecte FORCE-N prévue à %s",
+            next_run.isoformat()
+        )
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
     init_doctoral_db()
     init_recruiters_db()
+    init_trainings_db()
     tasks = []
     if AUTO_SYNC_ENABLED:
         tasks.append(asyncio.create_task(scheduler_loop()))
@@ -7486,6 +7530,8 @@ async def lifespan(app: FastAPI):
         tasks.append(asyncio.create_task(doctoral_scheduler_loop()))
     if RECRUITER_AUTO_SYNC_ENABLED:
         tasks.append(asyncio.create_task(recruiter_scheduler_loop()))
+    if TRAINING_AUTO_SYNC_ENABLED:
+        tasks.append(asyncio.create_task(training_scheduler_loop()))
     try:
         yield
     finally:
@@ -7499,6 +7545,7 @@ app.add_middleware(CORSMiddleware, allow_origins=[x.strip() for x in os.getenv('
 app.include_router(doctoral_router)
 app.include_router(immigration_router)
 app.include_router(recruiters_router)
+app.include_router(trainings_router)
 
 @app.get('/api/health')
 def health(): return {'status':'ok', 'database':str(DB_PATH), 'auto_sync_enabled':AUTO_SYNC_ENABLED, 'sync_interval_minutes':SYNC_INTERVAL_MINUTES}

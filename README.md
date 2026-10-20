@@ -1,142 +1,260 @@
-# Job Ci Adduna AI — Les opportunités du Sénégal au monde
+# Job Ci Adduna AI
 
-Application locale React + TypeScript + Vite, API FastAPI et SQLite. Le tableau de bord conserve les thèmes clair/sombre, le suivi de candidature et les brouillons d'e-mail/lettre, et ajoute la collecte de vraies annonces depuis des API publiques et des endpoints de recrutement publics.
+**Application locale de veille et de gestion d'opportunités professionnelles, académiques et de mobilité internationale.**
 
-## Collecte intégrée
-- **Arbeitnow Job Board API** : annonces accessibles via son endpoint public.
-- **Remotive API** : offres télétravail recherchées par mots-clés Java, Spring Boot et Angular.
-- **Greenhouse** : endpoints publics de tableaux de carrières, activés en renseignant `GREENHOUSE_BOARDS` avec les slugs des entreprises.
-- **Lever** : endpoints publics de tableaux de carrières, activés via `LEVER_SITES`.
-- Synchronisation automatique au démarrage, puis selon `SYNC_INTERVAL_MINUTES` (60 minutes par défaut), et bouton **Collecter maintenant** dans le dashboard.
-- Historique de la dernière synchronisation, état par source, erreurs de sources, nombre d'offres ajoutées/mises à jour.
-- Déduplication par URL canonique et identifiant/source lorsqu'il est disponible.
-- Champs source, URL d'origine, date de publication lorsqu'elle est fournie, et date de collecte.
-- Matching indicatif avec explication du score, compétences détectées et compétences non détectées.
+Job Ci Adduna AI regroupe dans une interface en français des offres d'emploi, des opportunités de recherche et de doctorat, des bourses et financements, des profils de recruteurs, des formations et des informations sur les parcours d'immigration. Le projet dispose d'un backend FastAPI, d'une interface React/Vite et d'une base SQLite locale.
 
-**Important :** disponibilité et champs retournés dépendent des fournisseurs et peuvent changer. Une date absente est affichée comme non fournie plutôt que d'être inventée. La fréquence de synchronisation n'est pas une garantie de publication en temps réel. Les collecteurs n'essaient pas de contourner les authentifications, CAPTCHA ou protections anti-bot. Vérifiez les conditions d'utilisation de chaque source avant usage soutenu.
+> **Important :** l'intégration d'un collecteur ne garantit pas que sa source soit accessible, activée ou fournisse des résultats. Les informations de financement, les échéances, les conditions d'éligibilité et les procédures d'immigration doivent être vérifiées sur les sites officiels.
 
-## Lancer sous Ubuntu
+## Sommaire
 
-### 1. Backend
+- [Fonctionnalités](#fonctionnalités)
+- [Architecture](#architecture)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Démarrage](#démarrage)
+- [API](#api)
+- [Collectes et synchronisations](#collectes-et-synchronisations)
+- [Tests](#tests)
+- [Sécurité et limites](#sécurité-et-limites)
+- [Documentation détaillée](#documentation-détaillée)
+
+## Fonctionnalités
+
+### Emplois et candidatures
+- Consultation, recherche et filtrage des offres collectées.
+- Ciblage des métiers informatiques, notamment Full Stack, backend, développement web et mobile.
+- Critères de recherche liés au pays, au mode de travail et à la mobilité lorsque les données disponibles le permettent.
+- Score de correspondance heuristique avec le profil.
+- Ajout manuel et suppression d'offres.
+- Suivi de l'état des candidatures.
+- Préparation de brouillons d'e-mails et de lettres de motivation.
+
+**Les brouillons ne sont pas envoyés automatiquement.** La candidature finale reste sous le contrôle de l'utilisateur.
+
+### Doctorats, recherche et financements
+- Catalogue distinct des opportunités doctorales et académiques.
+- Sources RSS/Atom et collecteurs institutionnels.
+- Recherche et filtres par domaine, pays et statut de financement.
+- Présentation des éléments disponibles sur le financement et les échéances.
+- Répertoire de programmes et de bourses à examiner.
+- Statuts de financement : `CONFIRMED_FULL`, `PARTIAL`, `UNCONFIRMED` et `UNKNOWN`.
+
+La présence d'un salaire, d'une bourse ou d'une mention de financement ne suffit pas à prouver qu'un programme couvre tous les frais.
+
+### Formations et appels à candidatures
+- Module dédié aux formations et programmes de financement.
+- Collecteurs associés à FORCE-N, aux financements 3FPT et à Espoir Jeunes.
+- Consultation des sources, des descriptions et des liens officiels disponibles.
+- Conservation des informations déjà collectées, notamment les échéances et les éléments de financement.
+
+Les échéances et liens de candidature peuvent être absents si les publications sources ne les fournissent pas ou si leur extraction n'est pas confirmée.
+
+### Recruteurs
+- Profils de recruteurs séparés des offres générales.
+- Offres associées à un recruteur lorsqu'une annonce individuelle est détectée.
+- Sources Hacker News « Who Is Hiring » et sites officiels configurés.
+- Synchronisation périodique et gestion des erreurs de sources.
+
+Un profil de recruteur ne signifie pas qu'une offre ouverte a été trouvée.
+
+### Immigration et mobilité internationale
+- Catalogue informatif de parcours officiels.
+- Voies liées à l'Allemagne, au Canada, à la France, aux Pays-Bas, à l'Union européenne, à l'Irlande et aux États-Unis.
+- Green Card fondée sur l'emploi, Diversity Visa (loterie annuelle), H-1B et L-1B.
+- Liens vers les autorités officielles et rappels sur les critères à vérifier.
+- Accès aux opportunités académiques et financements depuis l'interface de mobilité.
+
+Ce catalogue n'est ni un système de dépôt de demande de visa ni une garantie d'admissibilité. Les dates et critères doivent être vérifiés auprès de l'autorité compétente.
+
+## Architecture
+
+| Composant | Technologie | Répertoire |
+|---|---|---|
+| API | Python, FastAPI, Pydantic | `backend/app/` |
+| Base de données | SQLite | `./jobhunter.db` selon la configuration |
+| Interface | React, TypeScript, Vite | `frontend/src/` |
+| Collecteurs | HTTP, flux RSS/Atom, API et extraction HTML selon la source | `backend/app/` |
+| Tests | pytest | `backend/tests/` |
+| Documentation | Markdown | `docs/` |
+
+L'interface utilise `VITE_API_URL` si cette variable est définie. Sinon, elle utilise `http://127.0.0.1:8000/api`.
+
+## Installation
+
+### Prérequis
+
+- Ubuntu/Linux ou environnement compatible.
+- Python compatible avec les dépendances du projet.
+- Node.js et npm compatibles avec la version de Vite installée.
+- Accès réseau pour les sources en ligne.
+- Le dépôt et, pour les commandes Python ci-dessous, l'environnement virtuel `backend/.venv/`.
+
+### Backend
+
+Depuis la racine du projet :
+
 ```bash
-cd backend
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env
-uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+cd "$HOME/Téléchargements/Job Ci Adduna AI"
+
+# Créer l'environnement seulement s'il n'existe pas.
+python3 -m venv backend/.venv
+
+backend/.venv/bin/python -m pip install --upgrade pip
+backend/.venv/bin/python -m pip install -r backend/requirements.txt
 ```
-API : `http://127.0.0.1:8000/api/health`
-Swagger : `http://127.0.0.1:8000/docs`
 
-Le backend charge automatiquement le fichier `.env` s'il existe. Les variables d'environnement déjà définies dans le shell restent prioritaires.
+Certaines intégrations supplémentaires sont facultatives :
 
-### 2. Frontend
-Dans un second terminal :
 ```bash
-cd frontend
+backend/.venv/bin/python -m pip install -r backend/requirements-collectors.txt
+```
+
+Consulter `backend/requirements-ocr.txt` pour les dépendances OCR déclarées. Vérifier les versions et la compatibilité avant toute installation complémentaire.
+
+### Frontend
+
+```bash
+cd "$HOME/Téléchargements/Job Ci Adduna AI/frontend"
 npm install
+```
+
+## Configuration
+
+Le modèle de configuration est `backend/.env.example`. Le backend lit les variables d'environnement et le fichier `.env` selon son code de démarrage.
+
+Paramètres principaux :
+
+| Variable | Rôle |
+|---|---|
+| `JOBHUNTER_DB` | Chemin de la base SQLite |
+| `CORS_ORIGINS` | Origines frontend autorisées |
+| `AUTO_SYNC_ENABLED` | Active/désactive la synchronisation générale |
+| `SYNC_INTERVAL_MINUTES` | Intervalle de synchronisation des emplois |
+| `COLLECTOR_HTTP_TIMEOUT` | Délai maximal des requêtes des collecteurs |
+| `GREENHOUSE_BOARDS` | Tableaux Greenhouse configurés |
+| `LEVER_SITES` | Sites Lever configurés |
+| `DOCTORAL_AUTO_SYNC_ENABLED` | Synchronisation doctorale |
+| `DOCTORAL_SYNC_INTERVAL_HOURS` | Intervalle doctoral |
+| `JOBSPY_ENABLED` | Active le connecteur JobSpy |
+| `HIREHUNT_ENABLED` | Active le connecteur Hirehunt |
+| `CRAWL4AI_ENABLED` | Active le connecteur Crawl4AI |
+| `SCRAPEGRAPHAI_ENABLED` | Active le connecteur ScrapeGraphAI |
+| `SGAI_API_KEY` | Clé secrète du service ScrapeGraphAI |
+| `REMOTE_JOBS_API_URL` | URL explicite d'un service Remote Jobs API |
+| `VITE_API_URL` | URL de l'API utilisée par le frontend |
+
+Les connecteurs optionnels sont désactivés par défaut dans le modèle d'environnement. Leur activation peut exiger des dépendances, une configuration, une clé ou des crédits.
+
+**Ne jamais versionner `backend/.env`, les clés API, les bases de données ou les informations personnelles.** Ne pas remplacer le chemin de la base active sans sauvegarde et vérification.
+
+## Démarrage
+
+Terminal 1 — backend :
+
+```bash
+cd "$HOME/Téléchargements/Job Ci Adduna AI"
+PYTHONPATH="$PWD/backend" \
+  backend/.venv/bin/python -m uvicorn app.main:app \
+  --app-dir "$PWD/backend" --host 127.0.0.1 --port 8000
+```
+
+Terminal 2 — frontend :
+
+```bash
+cd "$HOME/Téléchargements/Job Ci Adduna AI/frontend"
 npm run dev
 ```
-Ouvrez l'URL Vite affichée, habituellement `http://127.0.0.1:5173`.
 
-### 3. Tester la collecte
-La collecte se lance automatiquement au démarrage du backend. Pour lancer manuellement :
-```bash
-curl -X POST http://127.0.0.1:8000/api/sync/run
-```
-État et dernière synchronisation :
-```bash
-curl http://127.0.0.1:8000/api/sync/status
-```
-Documentation interactive : `http://127.0.0.1:8000/docs`.
+Adresses locales usuelles :
 
-### 4. Connecter des tableaux de carrières
-Dans le terminal avant de démarrer le backend, par exemple :
-```bash
-export GREENHOUSE_BOARDS="slug1,slug2"
-export LEVER_SITES="slug1,slug2"
-```
-Remplacez les slugs par les identifiants réellement utilisés par les pages carrière des employeurs. Ces sources sont facultatives; Arbeitnow et Remotive sont configurées par défaut.
+- Interface : `http://127.0.0.1:5173`
+- Santé API : `http://127.0.0.1:8000/api/health`
+- Documentation interactive : `http://127.0.0.1:8000/docs`
 
-### Tests backend
-```bash
-cd backend
-source .venv/bin/activate
-pytest -q
-```
+Vérifier le chemin de la base renvoyé par l'endpoint de santé avant toute opération de maintenance. Ne pas supprimer ni recréer la base pour résoudre un problème de démarrage.
 
-## Fonctionnement et sécurité
-- La base active prévue est `./jobhunter.db` à la racine du projet, selon `JOBHUNTER_DB` dans `backend/.env`. Un ancien fichier `backend/jobhunter.db` peut subsister : ne pas le confondre avec la base active.
-- Le statut et les notes de candidature sont conservés lors des mises à jour d'offres existantes.
-- Les brouillons de lettre et d'e-mail restent à vérifier. Aucune candidature ou aucun e-mail n'est envoyé automatiquement.
-- Le matching est une heuristique explicable basée sur le texte publié; il ne remplace pas une lecture humaine de l'annonce.
-- Ne placez jamais de clé privée dans le frontend ou dans une variable `VITE_*`.
+## API
 
-## Filtres de pertinence et mobilité
+Les routes exposées incluent notamment :
 
-L’interface propose maintenant des filtres par métier (Full Stack / mobile), pays (Sénégal / international), mode de travail (télétravail complet, hybride, sur site) et mobilité internationale. Les annonces sont classées comme « prise en charge de la mobilité mentionnée » uniquement lorsqu’une expression explicite relative à la relocalisation, au visa ou aux frais de déplacement est détectée dans le texte disponible. Cela reste à confirmer auprès du recruteur : une annonce internationale ne garantit pas un visa ou un billet d’avion.
+| Module | Routes principales |
+|---|---|
+| Santé et configuration | `GET /api/health`, `GET /api/profile`, `GET /api/sources` |
+| Emplois | `GET /api/jobs`, `POST /api/jobs`, `DELETE /api/jobs/{job_id}` |
+| Candidatures | `PATCH /api/jobs/{job_id}/application` |
+| Brouillons | `POST /api/drafts` |
+| Statistiques | `GET /api/stats` |
+| Synchronisation générale | `GET /api/sync/status`, `POST /api/sync/run` |
+| Doctorats | `GET/POST /api/doctorates`, `PATCH /api/doctorates/{doctorate_id}`, `GET /api/doctorates/sources`, `POST /api/doctorates/sync` |
+| Immigration | `GET /api/immigration` |
+| Recruteurs | `GET/POST /api/recruiters`, `GET /api/recruiters/{recruiter_id}`, `GET/POST /api/recruiters/offers` |
+| Formations | `GET /api/trainings`, `GET /api/trainings/sources`, `POST /api/trainings`, `PATCH /api/trainings/{training_id}` |
 
-Le brouillon de candidature essaie de reconnaître la langue de l’annonce et prépare le courriel/la lettre en français ou en anglais. Il propose le PDF de CV correspondant. L’envoi n’est pas automatisé : validation humaine obligatoire.
+La liste exacte doit être vérifiée dans `/docs` pour la version exécutée. Les routes sont présentées avec leurs méthodes connues dans le code et ne constituent pas une garantie de disponibilité si le serveur ne démarre pas.
 
-CVs locaux éventuels dans `frontend/public/cv/` (PDF exclus de Git par défaut) :
-- `CV_Fallou_Ndiaye_FR.pdf` : version française corrigée fournie dans les fichiers de travail.
-- `CV_Fallou_Ndiaye_EN.pdf` : traduction anglaise du CV français corrigé, générée en conservant la structure et le style du document source.
+## Collectes et synchronisations
 
-Vérifiez le contenu des CVs avant chaque candidature et mettez à jour les deux versions ensemble.
+Le projet sépare les offres d'emploi ordinaires, les opportunités doctorales, les recruteurs et les formations.
 
-## Collecteurs complémentaires (optionnels)
+Les intervalles configurés dans le code/environnement sont généralement :
+- Emplois : 60 minutes, avec une limite minimale de prudence.
+- Doctorats : 24 heures.
+- Recruteurs : 6 heures.
+- Formations : 24 heures.
 
-Les connecteurs optionnels sont **désactivés par défaut** afin d'éviter de déclencher des collectes coûteuses ou non configurées. Le dashboard garde les diagnostics de chaque source et indique lorsqu'une intégration n'est pas configurée.
+Les valeurs effectives dépendent de la configuration et du démarrage du backend. Une synchronisation planifiée peut échouer, être bloquée par une source ou se terminer sans nouvelle offre. Consulter les logs et l'état de synchronisation plutôt que d'interpréter un compteur nul comme une preuve d'absence d'offres.
 
-### Installer les dépendances complémentaires
+Les collecteurs doivent respecter les politiques d'accès des sources, valider les URL et limiter la taille des réponses et le nombre de pages. Aucun contournement de protection anti-bot n'est prévu.
+
+## Tests
+
+Depuis la racine du dépôt :
 
 ```bash
-cd backend
-source .venv/bin/activate
-pip install -r requirements-collectors.txt
+PYTHONPATH="$PWD/backend" \
+  backend/.venv/bin/python -m pytest -q
 ```
 
-Redémarrez ensuite le backend après avoir configuré `backend/.env`.
-
-- **JobSpy (`python-jobspy`)** : intégration optionnelle de `scrape_jobs()` avec mots-clés, localisation et `hours_old` (720 h = 30 jours). Configurez `JOBSPY_ENABLED=true`, `JOBSPY_SITES`, `JOBSPY_SEARCH_TERMS`, `JOBSPY_LOCATION` et `JOBSPY_HOURS_OLD`. Commencez avec un seul site et un faible nombre de résultats. Ce connecteur n'est pas lancé tant qu'il n'est pas activé.
-- **Hirehunt** : intégration optionnelle avec sources configurables et stratégie de retry/rate policy. Configurez `HIREHUNT_ENABLED=true`, `HIREHUNT_SOURCES`, `HIREHUNT_SEARCH_TERMS` et `HIREHUNT_LOCATION`. La couverture varie selon les sources disponibles et leur pays.
-- **Remote Jobs API** : le package agrège Remotive, RemoteOK, We Work Remotely, Jobicy et Hacker News en un schéma commun. Pour le lancer localement après installation des dépendances optionnelles, exécutez `remote-jobs-api --serve --port 8321`, puis renseignez `REMOTE_JOBS_API_URL=http://127.0.0.1:8321/v1/jobs?skills=Java,Spring%20Boot,Angular,Flutter&limit=100`. Job Ci Adduna AI consomme alors cet endpoint local; le service peut aussi être lancé indépendamment.
-- **Crawl4AI** : crawl de pages carrière publiques dont les URL sont explicitement listées dans `CRAWL4AI_SEED_URLS`. Cette intégration extrait les annonces exposées en JSON-LD `JobPosting`; elle ne garantit pas l'extraction de toutes les pages ni des sites qui ne publient pas ce format.
-- **ScrapeGraphAI** : extraction structurée assistée par LLM sur les URL listées dans `SCRAPEGRAPHAI_URLS`. Configurez `SCRAPEGRAPHAI_ENABLED=true`, `LLM_API_KEY` et `LLM_MODEL`. L'appel à un modèle peut entraîner des coûts selon le fournisseur configuré.
-- **Jobicy API** : ajoutée comme source publique complémentaire pour des annonces remote récentes.
-
-### À propos du nom « jobdrop »
-
-Je n'ai pas pu vérifier un package Python public appelé exactement `jobdrop` qui corresponde à la signature `scrape_jobs(..., hours_old=...)` décrite. L'API de ce type que j'ai pu identifier est celle de **JobSpy** (`python-jobspy`). L'intégration du projet est donc nommée JobSpy et non « jobdrop » pour éviter de prétendre utiliser un package non vérifié.
-
-### Accès, conformité et qualité des données
-
-Ces intégrations ne signifient pas « toutes les annonces partout ». Certaines sources exigent un compte, une clé ou une autorisation; d'autres limitent la fréquence, la couverture géographique ou la réutilisation. N'activez que les sources dont les conditions permettent votre usage, ne contournez pas les connexions, CAPTCHA, protections anti-bot ou restrictions d'accès. Le paramètre de fraîcheur est appliqué par la source quand elle le prend en charge, sinon il est limité par les données disponibles. Les résultats restent soumis à normalisation, déduplication et vérification humaine.
-
-Pour consulter les connecteurs et leur configuration actuelle : `GET http://127.0.0.1:8000/api/sources`.
-
-
-### ScrapeGraphAI Cloud (optionnel)
-
-Le connecteur utilise le SDK officiel `scrapegraph-py` et la variable `SGAI_API_KEY`. Pour l'utiliser, configurez la clé uniquement dans `backend/.env`, activez `SCRAPEGRAPHAI_ENABLED=true` et renseignez `SCRAPEGRAPHAI_URLS` avec des URL publiques. Ne placez jamais de clé API dans le code, le README ou un dépôt Git. Si une clé est exposée, révoquez-la chez le fournisseur et remplacez-la. Le connecteur ne découvre pas automatiquement toutes les plateformes d'emploi; les extractions IA doivent être vérifiées avant toute candidature.
-
-
-## Configuration ScrapeGraphAI et sources d'emploi
-
-La configuration réelle de ScrapeGraphAI dépend de l'environnement local. Gardez `backend/.env` hors du dépôt Git et ne partagez jamais ses secrets. Vérifiez la validité et les autorisations de toute clé API dans le tableau de bord du fournisseur.
-
-Les URLs configurées couvrent des sources sénégalaises (Senjob, SeneJobs, service public/Tabax Sénégal) et internationales/remote (Remotive, We Work Remotely, Remote OK, Jobicy). Les connecteurs API publics déjà intégrés restent les plus fiables pour les sources qui les proposent; l'extraction IA dépend de la disponibilité, de la structure des pages et des conditions d'accès de chaque site. Les sources ne garantissent pas que chaque page racine contienne des offres exploitables.
-
-Pour lancer :
+Tests ciblés des modules formations :
 
 ```bash
-cd backend
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-pip install -r requirements-collectors.txt
-uvicorn app.main:app --reload
+PYTHONPATH="$PWD/backend" \
+  backend/.venv/bin/python -m pytest -q \
+  backend/tests/test_trainings_api.py \
+  backend/tests/test_training_collector.py \
+  backend/tests/test_espoir_jeunes_collector.py
 ```
 
-`backend/.env` est local et ne doit pas être commité. L'application utilise une collecte périodique et doit respecter les conditions d'utilisation, les règles d'accès et les limites de chaque source.
+Construction frontend :
+
+```bash
+cd "$HOME/Téléchargements/Job Ci Adduna AI/frontend"
+npm run build
+```
+
+Les résultats de tests historiques ne remplacent pas une nouvelle exécution. Documenter la date, la commande et le résultat réel après chaque vérification.
+
+## Sécurité et limites
+
+- Les sources externes peuvent être indisponibles, modifiées, limitées ou vides.
+- Les statuts de financement incertains doivent rester explicitement incertains.
+- Les échéances et liens de candidature ne doivent pas être inventés.
+- Les procédures de visa et de loterie sont susceptibles de changer.
+- Les brouillons de candidature ne sont pas des candidatures envoyées.
+- Les synchronisations automatiques doivent rester activées selon les réglages voulus.
+- Faire une sauvegarde avant de modifier le code ou la base.
+- Ne jamais effacer les données d'offres, de candidatures, de recruteurs, de formations ou de financement pour résoudre un problème documentaire.
+
+## Documentation détaillée
+
+- [État fonctionnel du projet](docs/ETAT_FONCTIONNEL_JOB_CI_ADDUNA_AI.md)
+- [Documentation frontend](docs/FRONTEND.md)
+- [Documentation backend et API](docs/BACKEND.md)
+- [Collecteurs, sources et synchronisations](docs/COLLECTEURS_ET_SYNCHRONISATION.md)
+- [Installation, configuration et tests](docs/INSTALLATION_ET_CONFIGURATION.md)
+- [Inventaire technique généré](docs/INVENTAIRE_TECHNIQUE_AUTOMATIQUE.md)
+
+## Statut du projet
+
+Le dépôt évolue par intégrations successives. Seuls les tests exécutés sur le commit concerné attestent du résultat correspondant. La présence d'un fichier, d'une route ou d'une configuration n'est pas une preuve que la fonctionnalité fonctionne en production.
