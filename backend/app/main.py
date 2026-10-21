@@ -258,6 +258,11 @@ def classify_job(job: dict[str, Any]):
 
 def row_to_job(row):
     d = dict(row)
+    existing_country = str(d.get('country') or '').strip()
+    if existing_country.lower() in ('', 'non précisé', 'non precise', 'unknown', 'none'):
+        inferred = infer_country(str(d.get('location') or ''))
+        if inferred != 'Non précisé':
+            d['country'] = inferred
     d['skills'] = [s for s in (d.get('skills') or '').split(',') if s]
     try: d['match_reasons'] = json.loads(d.get('match_reasons') or '[]')
     except (ValueError, TypeError): d['match_reasons'] = []
@@ -275,9 +280,36 @@ def infer_skills(text: str):
 
 def infer_country(location: str):
     low = (location or '').lower()
-    for key, value in [('senegal','Sénégal'),('dakar','Sénégal'),('france','France'),('paris','France'),('canada','Canada'),('quebec','Québec'),('québec','Québec'),('morocco','Maroc'),('maroc','Maroc'),('luxembourg','Luxembourg')]:
-        if key in low: return value
-    if any(x in low for x in ['remote','worldwide','anywhere','remote -']): return 'Remote'
+
+    # Avoid confusing Melbourne, Florida, with Melbourne, Australia.
+    if (
+        re.search(r'\bmelbourne\b', low)
+        and re.search(r'\b(?:fl|florida|united states|usa|us)\b', low)
+        and not re.search(r'\b(?:australia|vic|victoria)\b', low)
+    ):
+        return 'Non précisé'
+
+    # Australia and common Australian cities, including the ISO country code.
+    if re.search(
+        r'\b(?:australia|australian|sydney|melbourne|brisbane|perth|'
+        r'adelaide|canberra|hobart|darwin|gold coast|newcastle|au)\b',
+        low,
+    ):
+        return 'Australie'
+
+    for key, value in [
+        ('senegal', 'Sénégal'), ('dakar', 'Sénégal'),
+        ('france', 'France'), ('paris', 'France'),
+        ('quebec', 'Québec'), ('québec', 'Québec'),
+        ('canada', 'Canada'),
+        ('morocco', 'Maroc'), ('maroc', 'Maroc'),
+        ('luxembourg', 'Luxembourg'),
+    ]:
+        if key in low:
+            return value
+
+    if any(x in low for x in ['remote', 'worldwide', 'anywhere', 'remote -']):
+        return 'Remote'
     return 'Non précisé'
 
 

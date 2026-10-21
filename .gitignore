@@ -49,3 +49,8 @@ dist/
 **/*.backup
 frontend/public/cv/*.pdf
 *.tsbuildinfo
+
+# Artefacts locaux de développement
+frontend/.vite/
+*.backup-*
+*.backup-*-*

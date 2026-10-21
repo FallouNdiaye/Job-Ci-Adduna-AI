@@ -258,3 +258,26 @@ Les résultats de tests historiques ne remplacent pas une nouvelle exécution. D
 ## Statut du projet
 
 Le dépôt évolue par intégrations successives. Seuls les tests exécutés sur le commit concerné attestent du résultat correspondant. La présence d'un fichier, d'une route ou d'une configuration n'est pas une preuve que la fonctionnalité fonctionne en production.
+
+## Documentation automatique et commits
+
+Le dépôt fournit un hook Git versionné dans `.githooks/pre-commit`.
+Il régénère `docs/INVENTAIRE_TECHNIQUE_AUTOMATIQUE.md` et ajoute
+ce fichier à l'index avant chaque commit.
+
+Activation locale, depuis la racine du dépôt :
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Pour régénérer manuellement l'inventaire :
+
+```bash
+python3 scripts/generate_technical_docs.py
+```
+
+Le hook actualise l'inventaire technique ; il ne remplace pas la mise à
+jour manuelle des descriptions fonctionnelles. Les hooks Git doivent être
+activés sur chaque clone. Aucune base de données ni synchronisation
+d'offres n'est nécessaire pour générer cette documentation.

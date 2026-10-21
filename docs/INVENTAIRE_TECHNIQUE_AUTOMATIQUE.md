@@ -3,30 +3,33 @@
 > Fichier généré par `scripts/generate_technical_docs.py`.
 > Il décrit les éléments détectés dans le dépôt ; il ne certifie pas leur fonctionnement.
 
-- Généré le : 2026-10-19 17:24 UTC
+- Généré le : 2026-10-21 13:44 UTC
 - Branche Git : `main`
-- Dernier commit : `a713abe chore: initialize Job Ci Adduna AI repository`
+- Dernier commit : `dedcf62 feat: add training funding module and expand documentation`
 - État Git au moment du relevé : **modifications locales présentes**
 - Bases de données : non ouvertes ni inspectées par ce script.
 - Fichiers `.env` : jamais lus ; seules les clés du modèle `.env.example` sont listées.
 
 ## Structure détectée
 
-- Modules Python actifs dans `backend/app/` : **8**
-- Fichiers TypeScript/TSX dans `frontend/src/` : **5**
-- Fichiers de tests `test_*.py` : **54**
-- Routes déclarées détectées statiquement : **22**
+- Modules Python actifs dans `backend/app/` : **11**
+- Fichiers TypeScript/TSX dans `frontend/src/` : **6**
+- Fichiers de tests `test_*.py` : **58**
+- Routes déclarées détectées statiquement : **26**
 
 ## Modules Python
 
 - `backend/app/__init__.py`
 - `backend/app/doctoral.py`
+- `backend/app/espoir_jeunes_collector.py`
 - `backend/app/immigration.py`
 - `backend/app/main.py`
 - `backend/app/recruiter_hn.py`
 - `backend/app/recruiter_official.py`
 - `backend/app/recruiter_sync.py`
 - `backend/app/recruiters.py`
+- `backend/app/training_collector.py`
+- `backend/app/trainings.py`
 
 ## Frontend
 
@@ -34,6 +37,7 @@
 - `frontend/src/DoctoratesPanel.tsx`
 - `frontend/src/ImmigrationPanel.tsx`
 - `frontend/src/RecruitersPanel.tsx`
+- `frontend/src/TrainingPanel.tsx`
 - `frontend/src/main.tsx`
 
 ## Routes API déclarées dans le code
@@ -62,6 +66,10 @@
 | `backend/app/recruiters.py` | `GET` | `/{recruiter_id}` | `get_recruiter` |
 | `backend/app/recruiters.py` | `POST` | `` | `create_recruiter` |
 | `backend/app/recruiters.py` | `POST` | `/offers` | `create_recruiter_offer` |
+| `backend/app/trainings.py` | `GET` | `` | `list_trainings` |
+| `backend/app/trainings.py` | `GET` | `/sources` | `list_training_sources` |
+| `backend/app/trainings.py` | `PATCH` | `/{training_id}` | `update_training` |
+| `backend/app/trainings.py` | `POST` | `` | `create_training` |
 
 ## Fichiers de tests
 
@@ -70,6 +78,7 @@
 - `backend/tests/test_arbeitnow_collector.py`
 - `backend/tests/test_campus_france_collector.py`
 - `backend/tests/test_cnrs_collector.py`
+- `backend/tests/test_country_inference.py`
 - `backend/tests/test_crawl4ai_collector.py`
 - `backend/tests/test_doctoral_feed_security.py`
 - `backend/tests/test_doctoral_save_offer_safety.py`
@@ -79,6 +88,7 @@
 - `backend/tests/test_eiffel_scholarship_collector.py`
 - `backend/tests/test_emploi_dakar_collector.py`
 - `backend/tests/test_emploisenegal_collector.py`
+- `backend/tests/test_espoir_jeunes_collector.py`
 - `backend/tests/test_euraxess_collector.py`
 - `backend/tests/test_expat_dakar_collector.py`
 - `backend/tests/test_fao_collector.py`
@@ -109,6 +119,8 @@
 - `backend/tests/test_scrapegraphai_collector.py`
 - `backend/tests/test_senjob_collector.py`
 - `backend/tests/test_smartrecruiters_collector.py`
+- `backend/tests/test_training_collector.py`
+- `backend/tests/test_trainings_api.py`
 - `backend/tests/test_un_careers_collector.py`
 - `backend/tests/test_un_women_collector.py`
 - `backend/tests/test_undp_collector.py`
@@ -129,6 +141,9 @@
 - `pytest>=8.0,<9.0`
 - `python-dotenv>=1.0,<2.0`
 - `pypdf>=5.0,<7.0`
+- `PyMuPDF==2.0`
+- `rapidocr==3.10.0`
+- `onnxruntime==1.31.0`
 
 ## Dépendances complémentaires — requirements-collectors.txt
 

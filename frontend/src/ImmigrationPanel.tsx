@@ -427,7 +427,8 @@ export default function ImmigrationPanel({ apiBase }: Props) {
     return !isSenegal &&
       (job.international_recruitment === true ||
        job.relocation_supported === true ||
-       (isRemote && isRelevant));
+       (isRemote && isRelevant) ||
+       isRelevant);
   }).sort((a, b) => {
     const relevance = (job: MobilityJob) => {
       const text = `${job.title} ${job.role_category || ''} ${(job.skills || []).join(' ')}`.toLocaleLowerCase();

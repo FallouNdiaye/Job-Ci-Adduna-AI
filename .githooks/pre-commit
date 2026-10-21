@@ -1,0 +1,13 @@
+#!/bin/sh
+set -eu
+
+ROOT="$(git rev-parse --show-toplevel)"
+cd "$ROOT"
+
+echo "Génération de l'inventaire technique..."
+python3 scripts/generate_technical_docs.py
+
+echo "Ajout de l'inventaire généré à l'index..."
+git add docs/INVENTAIRE_TECHNIQUE_AUTOMATIQUE.md
+
+echo "Documentation technique prête pour le commit."
