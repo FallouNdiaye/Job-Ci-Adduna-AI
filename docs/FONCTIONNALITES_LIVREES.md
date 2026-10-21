@@ -13,6 +13,8 @@
 
 ### Documentation
 
+- **document Git contribution and feature workflow** (`b467216`)
+  - Fichiers : `.github/workflows/documentation-main.yml`, `CHANGELOG.md`, `README.md`, `docs/FONCTIONNALITES_LIVREES.md`, `docs/GUIDE_CONTRIBUTION_GIT.md`, `docs/INVENTAIRE_TECHNIQUE_AUTOMATIQUE.md`, `scripts/generate_feature_docs.py`
 - **automate changelog generation from Git history** (`6fea93f`)
   - Fichiers : `.githooks/pre-commit`, `CHANGELOG.md`, `README.md`, `docs/INVENTAIRE_TECHNIQUE_AUTOMATIQUE.md`, `scripts/generate_changelog.py`
 
