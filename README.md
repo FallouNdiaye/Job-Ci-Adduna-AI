@@ -281,3 +281,32 @@ Le hook actualise l'inventaire technique ; il ne remplace pas la mise à
 jour manuelle des descriptions fonctionnelles. Les hooks Git doivent être
 activés sur chaque clone. Aucune base de données ni synchronisation
 d'offres n'est nécessaire pour générer cette documentation.
+
+## Changelog et documentation automatiques
+
+Le dépôt génère deux documents à partir du code et de l'historique Git :
+
+- `docs/INVENTAIRE_TECHNIQUE_AUTOMATIQUE.md` : inventaire technique détecté dans le dépôt.
+- `CHANGELOG.md` : historique des commits regroupé par date et catégorie.
+
+Le hook versionné `.githooks/pre-commit` régénère ces deux documents et les
+ajoute à l'index avant chaque commit. Il doit être activé dans chaque clone :
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Génération manuelle :
+
+```bash
+python3 scripts/generate_technical_docs.py
+python3 scripts/generate_changelog.py
+```
+
+Le changelog reflète l'historique Git disponible au moment où il est généré.
+Comme le hook `pre-commit` s'exécute avant la création du nouveau commit,
+ce dernier apparaîtra dans le changelog lors de la génération suivante.
+Les descriptions fonctionnelles du README restent à maintenir manuellement.
+
+La génération n'ouvre pas la base de données, ne lit pas les valeurs des
+fichiers `.env` et ne lance aucune synchronisation d'offres.
