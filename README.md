@@ -282,6 +282,22 @@ jour manuelle des descriptions fonctionnelles. Les hooks Git doivent être
 activés sur chaque clone. Aucune base de données ni synchronisation
 d'offres n'est nécessaire pour générer cette documentation.
 
+## Guide Git et fonctionnalités livrées
+
+- [Guide de contribution Git](docs/GUIDE_CONTRIBUTION_GIT.md) : branche, commit, push et Pull Request.
+- [Fonctionnalités livrées](docs/FONCTIONNALITES_LIVREES.md) : résumé généré depuis les commits et les fichiers modifiés.
+- [Workflow de documentation GitHub Actions](.github/workflows/documentation-main.yml) : génération après un push sur `main`.
+
+Le workflow régénère `docs/FONCTIONNALITES_LIVREES.md` et crée un commit automatique
+uniquement si le document change. Pour autoriser sa publication, vérifier dans
+GitHub : Settings → Actions → General → Workflow permissions → Read and write permissions.
+
+Ce rapport est fondé sur les messages de commit et les chemins modifiés. Pour obtenir
+une documentation fonctionnelle utile, rédiger des messages explicites et décrire dans
+les Pull Requests le besoin, le comportement visible, les tests exécutés et les limites.
+La génération de ces documents ne nécessite ni accès à la base de données ni
+synchronisation des offres.
+
 ## Changelog et documentation automatiques
 
 Le dépôt génère deux documents à partir du code et de l'historique Git :

@@ -1,0 +1,47 @@
+name: Documentation automatique
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-documentation:
+    name: Générer la documentation des fonctionnalités
+    if: github.event_name != 'push' || !contains(github.event.head_commit.message, '[skip ci]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupérer le dépôt et son historique
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configurer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Vérifier le générateur
+        run: python -m py_compile scripts/generate_feature_docs.py
+
+      - name: Générer la documentation
+        run: python scripts/generate_feature_docs.py
+
+      - name: Publier la documentation si elle a changé
+        run: |
+          if git diff --quiet -- docs/FONCTIONNALITES_LIVREES.md; then
+            echo "La documentation est déjà à jour."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add docs/FONCTIONNALITES_LIVREES.md
+          git commit -m "docs: update delivered features [skip ci]"
+          git push origin HEAD:main

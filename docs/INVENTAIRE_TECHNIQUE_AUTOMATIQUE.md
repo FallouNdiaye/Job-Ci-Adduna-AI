@@ -3,9 +3,9 @@
 > Fichier généré par `scripts/generate_technical_docs.py`.
 > Il décrit les éléments détectés dans le dépôt ; il ne certifie pas leur fonctionnement.
 
-- Généré le : 2026-10-21 13:49 UTC
+- Généré le : 2026-10-21 14:58 UTC
 - Branche Git : `main`
-- Dernier commit : `61c916e feat: improve country inference and mobility opportunities`
+- Dernier commit : `6fea93f docs: automate changelog generation from Git history`
 - État Git au moment du relevé : **modifications locales présentes**
 - Bases de données : non ouvertes ni inspectées par ce script.
 - Fichiers `.env` : jamais lus ; seules les clés du modèle `.env.example` sont listées.

@@ -9,6 +9,10 @@
 
 - improve country inference and mobility opportunities (`61c916e`)
 
+### Documentation
+
+- automate changelog generation from Git history (`6fea93f`)
+
 ## 2026-10-20
 
 ### Fonctionnalités
@@ -24,4 +28,4 @@
 
 ---
 
-Dernière génération : 2026-10-21 13:49 GMT
+Dernière génération : 2026-10-21 14:58 GMT
